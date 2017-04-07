@@ -14,7 +14,11 @@
 
 * socket的信息传输上，目前是通过字符串传输的，我把一个字符理解为2个字节，0-65535，一个坐标值x就可以直接用一个字符表示了，目前的这个也是压缩传输了，不过不是最好的，最好的方式是byte数组 Uint8Array的模式，我后面学了golang，详细的参了一下字符串，字节数组之间的转化，发现我写这个版本的时候踩了坑。我后面用golang来写游戏的服务端，发现性能提升很多，同时没这么麻烦了。golang支持多线程，同时线程间的内存变量是可以相互访问的。nodejs为了多线程，还必须得同步线程之间的数据，相当的麻烦。
 
-* 
+再讲几点
+
+* 游戏服务器性能方面，测试时大概容纳150个玩家流畅的同时游戏
+
+* 碰撞检测用的最简单的办法，未使用四叉树和包围盒算法。动态规划处理消息的收发，减少服务器的负载，详情参见`wsserver/main.js` 的源码
 
 
 ## screenshot:
@@ -22,3 +26,26 @@
 >demo 1:<br>
 ![demo1](https://raw.githubusercontent.com/yicheng-irun/Tank-Battle/master/res/demo.png)
 
+## start:
+
+先获取项目
+```cmd
+$ npm install
+```
+安装完node依赖
+```cmd
+$ node www
+```
+运行服务器
+
+
+浏览器打开 
+[http://localhost:5000/](http://localhost:5000/)
+
+
+试玩之后，用浏览器打开 
+[https://github.com/yicheng-irun/Tank-Battle](https://github.com/yicheng-irun/Tank-Battle)
+
+点击此处，给我一颗星<br>
+
+![thanks](https://raw.githubusercontent.com/yicheng-irun/Tank-Battle/master/res/thanks.png)
