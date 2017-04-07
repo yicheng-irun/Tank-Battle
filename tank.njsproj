@@ -1,0 +1,244 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <Name>feiji</Name>
+    <RootNamespace>feiji</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>43d5a73f-6eee-41a7-9aa0-ad7db84b239a</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>www.js</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <ProjectView>ShowAllFiles</ProjectView>
+    <NodejsPort>1337</NodejsPort>
+    <StartWebBrowser>true</StartWebBrowser>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="ai.js" />
+    <Compile Include="app.js" />
+    <Compile Include="copy.js" />
+    <Compile Include="ddd.js" />
+    <Compile Include="public\js2\easeljs-0.8.2.min.js" />
+    <Compile Include="public\js2\hammer.min.js" />
+    <Compile Include="public\js2\iio.js" />
+    <Compile Include="public\js2\iio.min.js" />
+    <Compile Include="public\js2\jquery-1.11.1.min.js" />
+    <Compile Include="public\js2\socket.io.js" />
+    <Compile Include="public\js2\tk.js" />
+    <Compile Include="public\js2\tweenjs-0.6.2.min.js" />
+    <Compile Include="public\js\pixi.js" />
+    <Compile Include="public\js\pixi.min.js" />
+    <Compile Include="public\js\socketio_145.js" />
+    <Compile Include="public\js\vue.js" />
+    <Compile Include="public\js\vue.min.js" />
+    <Compile Include="public\js2\zepto.min.1.1.6.js" />
+    <Compile Include="public\js3\feiji.js" />
+    <Compile Include="public\js3\OrbitControls.js" />
+    <Compile Include="public\js3\stats.min.js" />
+    <Compile Include="public\js3\three.js" />
+    <Compile Include="public\js3\three.min.js" />
+    <Compile Include="public\js3\tween.min.js" />
+    <Compile Include="public\js\jquery-1.11.1.min.js" />
+    <Compile Include="public\j\vue.js" />
+    <Compile Include="public\j\vue.min.js" />
+    <Compile Include="routes\admin.js" />
+    <Compile Include="routes\chat.js" />
+    <Compile Include="routes\index.js" />
+    <Compile Include="util\cssmin.js" />
+    <Compile Include="util\jsmin.js" />
+    <Compile Include="util\swig_splite_js.js" />
+    <Compile Include="routes\users.js" />
+    <Compile Include="bin\www" />
+    <Compile Include="settings.js" />
+    <Compile Include="util\zip.js" />
+    <Compile Include="wsserver2\ai.js" />
+    <Compile Include="wsserver2\conn.js" />
+    <Compile Include="wsserver2\goods.js" />
+    <Compile Include="wsserver2\guns.js" />
+    <Compile Include="wsserver2\idmanage.js" />
+    <Compile Include="wsserver2\main.js" />
+    <Compile Include="wsserver2\public.js" />
+    <Compile Include="wsserver2\referee.js" />
+    <Compile Include="wsserver2\thing.js" />
+    <Compile Include="wsserver2\tools.js" />
+    <Compile Include="wsserver\idmanage.js" />
+    <Compile Include="wsserver\main.js" />
+    <Compile Include="wsserver\public.js" />
+    <Compile Include="public\js2\thing.js" />
+    <Compile Include="wsserver\tool.js" />
+    <Compile Include="wsserver\tools.js" />
+    <Compile Include="www.js" />
+    <Content Include="package.json" />
+    <Content Include="public\css\admin\drow.css" />
+    <Content Include="public\css\admin\guns.css" />
+    <Content Include="public\css\chat.css" />
+    <Content Include="public\css\img\fulscr.png" />
+    <Content Include="public\css\img\setting.png" />
+    <Content Include="public\css\tanke.css" />
+    <Content Include="public\css\index.css" />
+    <Content Include="public\css\layout.css" />
+    <Content Include="public\css\sheshe.css" />
+    <Content Include="public\css\test.css" />
+    <Content Include="public\css\tk.css" />
+    <Content Include="public\favicon.ico" />
+    <Content Include="public\gpic\bg.png" />
+    <Content Include="public\gpic\bg2.jpg" />
+    <Content Include="public\gpic\boom.png" />
+    <Content Include="public\gpic\fj0.png" />
+    <Content Include="public\gpic\invader32x32x4.png" />
+    <Content Include="public\gpic\player.png" />
+    <Content Include="public\gpic\zd1.png" />
+    <Content Include="public\gpic\zd2.png" />
+    <Content Include="public\gpic\zd3.png" />
+    <Content Include="public\img\loading.gif" />
+    <Content Include="public\i\bd.png" />
+    <Content Include="public\i\cp.png" />
+    <Content Include="public\i\cp2.png" />
+    <Content Include="public\p\bg.png" />
+    <Content Include="public\p\bg2.png" />
+    <Content Include="public\p\fj0.png" />
+    <Content Include="public\p\gp0.png" />
+    <Content Include="public\p\gp1.png" />
+    <Content Include="public\p\gp3.png" />
+    <Content Include="public\p\jp_b.png" />
+    <Content Include="public\p\jp_g.png" />
+    <Content Include="public\p\jp_v.png" />
+    <Content Include="public\p\jp_y.png" />
+    <Content Include="public\p\tk0.png" />
+    <Content Include="public\p\tk1.png" />
+    <Content Include="public\p\wt_0.png" />
+    <Content Include="public\p\wt_1.png" />
+    <Content Include="public\p\wt_2.png" />
+    <Content Include="public\p\wt_3.png" />
+    <Content Include="public\p\wt_4.png" />
+    <Content Include="public\p\wt_5.png" />
+    <Content Include="public\p\wt_6.png" />
+    <Content Include="public\p\zd0.png" />
+    <Content Include="public\p\zd1.png" />
+    <Content Include="public\p\zd2.png" />
+    <Content Include="public\p\zd3.png" />
+    <Content Include="public\p\zd4.png" />
+    <Content Include="public\p\zd_f.png" />
+    <Content Include="README.md" />
+    <Content Include="routes\guns\gunbase - Copy %282%29.json" />
+    <Content Include="routes\guns\gunbase - Copy.json" />
+    <Content Include="routes\guns\gunbase.json" />
+    <Content Include="routes\guns\gun_codecopy.txt" />
+    <Content Include="views\admin\drow.html" />
+    <Content Include="views\admin\guns.html" />
+    <Content Include="views\sheshe.html" />
+    <Content Include="views\chat_manage.html" />
+    <Content Include="views\404.html" />
+    <Content Include="views\500.html" />
+    <Content Include="views\bguse.html" />
+    <Content Include="views\error.html" />
+    <Content Include="views\index2.html" />
+    <Content Include="views\pixi.html" />
+    <Content Include="views\index.html" />
+    <Content Include="views\layout.html" />
+    <Content Include="views\sheshe2.html" />
+    <Content Include="views\tank2.html" />
+    <Content Include="views\tank.html" />
+    <Content Include="views\wstest.html" />
+    <Content Include="ws_go\.vscode\launch.json" />
+    <Content Include="ws_go\main.go" />
+    <Content Include="ws_go\pkg\windows_amd64\game.a" />
+    <Content Include="ws_go\pkg\windows_amd64\tool.a" />
+    <Content Include="ws_go\pkg\windows_amd64\tt.a" />
+    <Content Include="ws_go\src\game\game.go" />
+    <Content Include="ws_go\src\tool\id.go" />
+    <Content Include="ws_go\src\tool\main.go" />
+    <Content Include="ws_go\src\tool\tool.go" />
+    <Content Include="ws_go\wstestgo\test.go" />
+    <Content Include="ws_go\wstestgo\wsclient.go" />
+    <Content Include="ws_go\wstestgo\wsserver.go" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\" />
+    <Folder Include="public\css\admin\" />
+    <Folder Include="public\css\img\" />
+    <Folder Include="public\i\" />
+    <Folder Include="public\j\" />
+    <Folder Include="public\p\" />
+    <Folder Include="routes\guns\" />
+    <Folder Include="views\admin\" />
+    <Folder Include="wsserver2\" />
+    <Folder Include="util\" />
+    <Folder Include="public_zip\" />
+    <Folder Include="public\js2\" />
+    <Folder Include="public\js\" />
+    <Folder Include="public\gpic\" />
+    <Folder Include="wsserver\" />
+    <Folder Include="public\" />
+    <Folder Include="public\css\" />
+    <Folder Include="public\img\" />
+    <Folder Include="public\js3\" />
+    <Folder Include="routes\" />
+    <Folder Include="views\" />
+    <Folder Include="ws_go\" />
+    <Folder Include="ws_go\.vscode\" />
+    <Folder Include="ws_go\pkg\" />
+    <Folder Include="ws_go\pkg\windows_amd64\" />
+    <Folder Include="ws_go\src\" />
+    <Folder Include="ws_go\src\game\" />
+    <Folder Include="ws_go\src\tool\" />
+    <Folder Include="ws_go\wstestgo\" />
+  </ItemGroup>
+  <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:48022/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost:1337</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
