@@ -9,7 +9,4 @@ if (process.cwd().indexOf("bae") != -1) {
 }
 //settings.isonline = true;
 
-
-
-
 module.exports = settings;
