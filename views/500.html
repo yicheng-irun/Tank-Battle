@@ -1,0 +1,44 @@
+﻿{% extends 'layout.html' %}
+
+{% block extra_style %}
+    {% cssmin %}
+    <style>
+    .div-500 {
+        text-align: center;
+        padding-top: 200px;
+    }
+
+        .div-500 > h1 {
+            font-size: 50px;
+        }
+
+        .div-500 > h2 {
+        }
+
+        .div-500 > p {
+            word-break: break-word;
+        }
+    </style>
+    {% endcssmin %}
+{% endblock %}
+
+{% block baidutongji %}{% endblock %}
+
+{% block content %}
+<div class="div-500">
+    <h1>500</h1>
+    <h2>A Server Error occurred</h2>
+    {% if details %}
+    <p>{{details}}</p>
+    {% else %}
+    <p>we are sorry</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_foot_script %}
+{% jsmin %}
+<script>
+</script>
+{% endjsmin %}
+{% endblock %}

@@ -1,0 +1,904 @@
+﻿{% extends '../layout.html' %}
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>{% block title %}guns{% endblock %}</title>
+    {% block headcss %}
+    <link rel="stylesheet" type="text/css" href="/css/admin/guns.css" />
+    <style>
+    </style>
+    {% endblock %}
+</head>
+<body>
+    {% block content %}
+
+    <div class="main">
+        {% raw %}
+        <div id="js-vue" class="g-lines">
+            <div class="edt-code-btns">
+                <div class="btn info" v-on:click="savetoserver()">提交到服务器</div>
+                <div class="btn info" v-on:click="outputData()">导出数据</div>
+                <div class="btn success" v-on:click="upload_bglines()">提交背景线条图片</div>
+            </div>
+            <div class="edt-bg-line">
+                <canvas id="js-edt-bgline"></canvas>
+            </div>
+            <div class="g-main-tmplt">
+                <div class="g-child">
+                    <div v-for="(key,item) in c" class="g-pao">
+                        <div v-bind:id="'item_'+item.id" class="g-item">
+                            <div class="g-item-idx">{{item.id}}_{{item.pid}}</div>
+                            <div class="g-icon">
+                                <img v-bind:src="'/p/'+item.p+'.png'" src="/p/gp0.png" />
+                            </div>
+                            <div class="g-name">{{item.n}}</div>
+                            <div class="g-goumai">购买</div>
+                            <div class="g-info">
+                                <div class="g-btns">
+                                    <div v-on:click="addChild(item)">添加</div>
+                                    <div v-on:click="deleteMe(key)">删除</div>
+                                    <div v-on:click="editer(key)">编辑</div>
+                                </div>
+                                <div class="g-infos">
+                                    {{item.code}}
+                                </div>
+                            </div>
+                        </div>
+                        <pao v-if="item.c.length>0" v-bind:c="item.c"></pao>
+                    </div>
+                </div>
+            </div>
+            <div class="edt-outpt">
+                <textarea id="js-outpt-guns"></textarea>
+                <textarea id="js-outpt-imgs"></textarea>
+            </div>
+        </div>
+        <div id="js-editer" class="editer-main showa">
+
+            <div class="form">
+                <div class="top-btn">
+                    <div v-on:click="cancle()">取消</div>
+                    <div v-on:click="save()">保存</div>
+                </div>
+                <form class="p-form">
+                    <div class="form-ipt-title">main</div>
+                    <div class="form-row">
+                        <label>名称</label>
+                        <input type="text" v-model="n" name="n" />
+                    </div>
+
+                    <div class="form-row">
+                        <label>介绍</label>
+                        <textarea v-model="m" name="m"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <label>价格</label>
+                        <input type="number" min="0" v-model.number="pr" number name="pr" />
+                    </div>
+
+                    <div class="form-row">
+                        <label>pao图片</label>
+                        <input type="text" v-model="p" name="p" />
+                    </div>
+
+                    <div class="form-row">
+                        <label>p_code</label><button type="button" class="btn" v-on:click="setToRight()" >设置到右边</button>
+                        <textarea class="pcode" v-model="pcode" name="pcode"></textarea>
+                    </div>
+                </form>
+                <div class="form-fires">
+                    <div class="form-ipt-title">zds
+                        <div class="btn success zd-ceshi" v-on:click="zd_ceshi()">测试</div>
+                    </div>
+
+                    <form v-for="(idx,item) in fires" class="f-form">
+                        <div class="ff-key" v-html="idx"></div>
+                        <div class="ff-delete" v-on:click="deleteF(idx)">删除</div>
+                        <div class="form-row">
+                            <label>tx</label>
+                            <input type="number" v-model.number="item.tx" number name="tx" />
+                        </div>
+                        <div class="form-row">
+                            <label>ty</label>
+                            <input type="number" v-model.number="item.ty" number name="ty" />
+                        </div>
+                        <div class="form-row">
+                            <label>tr</label>
+                            <input type="number" v-model.number="item.tr" number name="tr" />
+                        </div>
+                        <div class="form-row">
+                            <label>d[距离]</label>
+                            <input type="number" v-model.number="item.d" number name="d" />
+                        </div>
+                        <div class="form-row">
+                            <label>v[速度]</label>
+                            <input type="number" v-model.number="item.v" number name="v" />
+                        </div>
+                        <div class="form-row">
+                            <label>ct[持续]</label>
+                            <input type="number" v-model.number="item.ct" number name="ct" />
+                        </div>
+                        <div class="form-row">
+                            <label>tt[间隔]</label>
+                            <input type="number" v-model.number="item.tt" number name="ct" />
+                        </div>
+                        <div class="form-row">
+                            <label>st[差时]</label>
+                            <input type="number" v-model.number="item.st" number name="st" />
+                        </div>
+                        <div class="form-row">
+                            <label>k[伤害]</label>
+                            <input type="number" v-model.number="item.k" number min="1" name="k" />
+                        </div>
+                        <div class="form-row">
+                            <label>img</label>
+                            <input type="text" min="0" v-model="item.img" name="img" />
+                            <img v-bind:src="'/p/'+item.img+'.png'" src="/p/zd0.png" />
+                        </div>
+                    </form>
+
+                    <div class="fires-add" v-on:click="addFire()">添加</div>
+                </div>
+
+            </div>
+
+            <div class="edt-canvas">
+                <div class="code-editer-d">
+                    <div class="edt-code-btns">
+                        <div class="btn" v-on:click="resetCode()">重置</div>
+                        <div class="btn info" v-on:click="pcodeSave()">保存到左边</div>
+                        <div class="btn success" v-on:click="pcodeRun()">运行</div>
+                    </div>
+                    <div id="js-pao-code" class="editer-pao-code"></div>
+                </div>
+                <div class="edt-p-effect">
+                    <div class="edt-code-btns">
+                        <div class="btn info" v-on:click="submitPicCode()">提交图片</div>
+                    </div>
+                    <div class="edt-yulan">
+                        <span>保存后预览：</span>
+                        <!--<div class="no-body">
+                            <img id="js-baocun-yulan2" class="p_yulanimg" src="/p/gp0.png" />
+                        </div>-->
+                        <div class="no-body">
+                            <img id="js-baocun-yulan2" class="h-border p_yulanimg" src="/p/gp0.png" />
+                        </div>
+                        <div>
+                            <img id="js-baocun-yulan" class="p_yulanimg" src="/p/gp0.png" />
+                        </div>
+                    </div>
+                </div>
+                <div class="edt-canvas-d">
+                    <div class="p-pao-canvas">
+                        <canvas id="js-pao-canvas"></canvas>
+                    </div>
+                    <div class="p-yasuo-canvas">
+                        <canvas id="js-yasuo-canvas"></canvas>
+                    </div>
+                    <div class="p-zidan-canvas">
+                        <canvas id="js-zidan-canvas" width="800" height="400"></canvas>
+                        <div class="p-zidan-tkbody">
+                            <img class="p_yulanimg" src="/p/gp0.png" />
+                        </div>
+                    </div>
+                </div>
+                <div class="edt-code-copy">
+                    <div class="edt-code-btns">
+                        <div class="btn info" v-on:click="codecopySave()">保存</div>
+                    </div>
+                    <div id="js-code-copy" class="editer-code-copy"></div>
+                </div>
+            </div>
+
+        </div>
+        {% endraw %}
+    </div>
+
+
+    {% endblock %}
+    <script src="/public/js/jquery-1.11.1.min.js"></script>
+    <script src="/public/js/vue.js"></script>
+    <script src="/public/js2/easeljs-0.8.2.min.js"></script>
+    <script src="/public/js2/tweenjs-0.6.2.min.js"></script>
+    {% block footjs %}
+    <script src="/js/jquery-1.11.1.min.js"></script>
+    <script src="/js/vue.js"></script>
+    <script src="/js2/easeljs-0.8.2.min.js"></script>
+    <script src="/js2/tweenjs-0.6.2.min.js"></script>
+    <script src="http://cdn.bootcss.com/ace/1.2.6/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+        var module = {};
+
+        var styletool = {};
+        styletool.toast = function (msg, msgtitle) {
+            var titlestr = "";
+            if (msgtitle) {
+                titlestr = "<span class='popup-toast-title'>" + msgtitle + "</span>";
+            }
+            var htmlstr = "<div class='popup-toast'>" + titlestr + "<span>" + msg + "</span></div>";
+            var toastdom = $(htmlstr);
+            $("body").append(toastdom);
+
+            setTimeout(function () {
+                toastdom.css("opacity", 0);
+            }, 2600);
+            setTimeout(function () {
+                toastdom.remove();
+            }, 3000);
+        }
+        styletool.log = styletool.toast;
+
+        function clone(myObj) {
+            if (typeof (myObj) != 'object') return myObj;
+            if (myObj == null) return myObj;
+
+            var myNewObj;
+            if (myObj.constructor) {
+                myNewObj = new myObj.constructor();
+            } else
+                myNewObj = {}
+            for (var i in myObj)
+                myNewObj[i] = clone(myObj[i]);
+            return myNewObj;
+        }
+
+        var tools = {};
+        tools.deg2vector = function () {
+            var degreeToRadiansFactor = Math.PI / 180;
+            return function (deg, rst) {
+                var result = rst || { x: 0, y: 0 };
+                var rad = (deg % 360) * degreeToRadiansFactor;
+                result.y = Math.round(Math.sin(rad) * 1000) / 1000;
+                result.x = Math.round(Math.cos(rad) * 1000) / 1000;
+                return result;
+            }
+        }();
+        tools.vector2deg = function () {
+            var radianToDegreesFactor = 180 / Math.PI;
+            return function (x, y) {
+                if (x == 0 && y == 0) {
+                    return 360;
+                }
+                rad = Math.atan(y / x);
+                var result = rad * radianToDegreesFactor;
+                if (x < 0) {
+                    result += 180;
+                }
+                if (result < 0) {
+                    result += 360;
+                }
+                return result;
+            }
+        }();
+
+    </script>
+    <script src="/admin/guns.js"></script>
+    <script>
+        function getDefaultP() {
+            return {
+                id: 0,
+                p: "p0",
+                pid: -1,
+                n: "未命名",
+                code: "",
+                c: [],
+            }
+        }
+
+        var vdata = getDefaultP();
+        $.ajax({
+            url: "/admin/guns.json",
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                vdata = data;
+            },
+            error: function () {
+                vdata = { "c": [getDefaultP()] };
+                vdata.c[0].pid = 0;
+            }
+        });
+
+        Vue.component("pao", {
+            template: $(".g-main-tmplt").html(),
+            props: ['c'],
+            methods: {
+                addChild: function (data) {
+                    data.c.push(getDefaultP());
+                    refreshId();
+                },
+                deleteMe: function (data) {
+                    var d = confirm("确认删除？");
+                    if (d) {
+                        this.c.splice(data, 1);
+                        refreshId();
+                    }
+                },
+                editer: function (key) {
+                    editeOne(this.c[key]);
+                }
+
+            }
+        });
+        $(".g-main-tmplt").html('<pao v-bind:c="c"></pao>');
+
+        var pvue = new Vue({
+            //template: '<pao v-bind:c="c"></pao>',
+            data: vdata,
+            el: '#js-vue',
+            methods: {
+                savetoserver: function () {
+                    var jsonstr = JSON.stringify(vdata);
+                    $.ajax({
+                        url: "/admin/guns.json",
+                        type: "post",
+                        data: { str: jsonstr },
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.success) {
+                                styletool.log("保存成功");
+                            }
+                        },
+                    });
+                },
+                outputData: function () {
+                    outputDataFun();
+                },
+                upload_bglines: function () {
+                    if (lines_canvas) {
+                        var b64data = lines_canvas.toDataURL('image/png');
+                        $.ajax({
+                            url: "/admin/gunspic",
+                            type: "post",
+                            data: { str: b64data, type: "bgline" },
+                            dataType: "json",
+                            success: function (data) {
+                                if (data.success) {
+                                    styletool.log("提交成功");
+                                } else {
+                                    styletool.log("提交失败");
+                                }
+                            },
+                            error: function () {
+                                styletool.log("提交异常");
+                            }
+                        })
+                    } else {
+                        styletool.log("提交失败！要先导出数据");
+                    }
+                }
+            }
+        });
+
+        var lines_canvas;
+
+        function outputDataFun() {
+            var guns = {};
+            var pics = {};
+            var lines = [];
+
+            var blef, btop;
+            var item0st = $("#item_0").parent().offset();
+            blef = item0st.left;
+            btop = item0st.top;
+
+            function getdatadigui(clist) {
+                var slef = 0, elef = 0,stop = 0,etop = 0;
+
+                for (var i in clist) {
+                    var sdata = JSON.parse(clist[i].code);
+                    delete sdata["pcode"];
+                    delete sdata["pid"];
+                    //var pdata = JSON.parse(sdata);
+                    //delete pdata["c"];
+                    var nid = clist[i].id
+                    guns[nid] = sdata;
+                    
+                    var gjq = $("#item_" + nid).offset();
+                    sdata.lf = gjq.left - blef;
+                    sdata.tp = gjq.top - btop;
+
+                    if (i == 0) {
+                        slef = sdata.lf;
+                        stop = sdata.tp;
+                    }
+                    if (i == clist.length - 1) {
+                        elef = sdata.lf;
+                        etop = sdata.tp;
+                    }
+
+                    pics[clist[i].p] = clist[i].p;
+                    if (clist[i].c) {
+                        getdatadigui(clist[i].c);
+                        if (clist[i].c.length>0)
+                            sdata._cd = true;
+                    }
+                }
+
+                if (slef != elef) {
+                    lines.push([slef, stop, elef, etop]);
+                }
+            }
+            getdatadigui(vdata.c);
+
+            drow_line(guns, lines);
+
+            for (var gi in guns) {
+                var gn = guns[gi];
+                delete gn['_cd'];
+            }
+
+            
+
+            var pstr = JSON.stringify(pics);
+            pstr = pstr.substr(1);
+            pstr = pstr.substr(0, pstr.length - 1);
+
+            $("#js-outpt-guns").val(JSON.stringify(guns));
+            $("#js-outpt-imgs").val(pstr);
+        }
+
+        function drow_line(guns,lines) {
+            var $canvas = $("#js-edt-bgline");
+            var canvas = $canvas[0];
+            var ctx = canvas.getContext("2d");
+            lines_canvas = canvas;
+
+            var item0jq = $("#item_0").parent();
+            $canvas.css("margin-left", item0jq.offset().left - $(".edt-bg-line").offset().left);
+            var w  = canvas.width = item0jq.width();
+            var h = canvas.height = item0jq.height();
+
+
+            var ofstlef = $("#item_0").width() / 2 + 2;
+            var ofstht = $("#item_0").height() + 4;
+
+            ctx.clearRect(0, 0, w, h);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "rgba(0,0,0,0.5)";
+            ctx.beginPath();
+            for (var i in lines) {
+                var dline = lines[i];
+                ctx.moveTo(dline[0] + ofstlef, dline[1] - 10);
+                ctx.lineTo(dline[2] + ofstlef, dline[3] - 10);
+            }
+
+            for (var gi in guns) {
+                var gn = guns[gi];
+                ctx.moveTo(gn.lf + ofstlef, gn.tp - 11);
+                ctx.lineTo(gn.lf + ofstlef, gn.tp + 0);
+
+                if (gn._cd) {
+                    ctx.moveTo(gn.lf + ofstlef, gn.tp + ofstht);
+                    ctx.lineTo(gn.lf + ofstlef, gn.tp + ofstht + 11);
+                }
+            }
+
+            ctx.stroke();
+
+        }
+
+        function refreshId() {
+            var nid = 0;
+            var yf_pids = [];
+            var wei_pid = [];
+            function setIDdigui(clist) {
+                for (var i in clist) {
+                    clist[i].id = nid++;
+                    if (clist[i].pid >= 0) {
+                        yf_pids.push(clist[i].pid);
+                    } else {
+                        wei_pid.push(clist[i]);
+                    }
+                    if (clist[i].c) {
+                        setIDdigui(clist[i].c);
+                    }
+                }
+            }
+            setIDdigui(vdata.c);
+            yf_pids.sort(function (a, b) {
+                return a - b;
+            });
+            function getAID() {
+                for (var i = 0; i < yf_pids.length; i++) {
+                    console.log(i, yf_pids[i]);
+                    if (yf_pids[i] > i) {
+                        yf_pids.splice(i, 0, i);
+                        return i;
+                    }
+                }
+                var d = i++;
+                yf_pids.push(d);
+                return d;
+            }
+            for (var wi in wei_pid) {
+                wei_pid[wi].pid = getAID();
+            }
+        }
+
+        //以上为主界面
+
+
+        var resetcode = $("#js-pao-code").html();
+        var paodetail = {
+            n: "土炮",
+            m: "最基础的枪，俗称土炮",
+            pr: 0,      //价格
+            //tt: 500,     //间隔时间
+            //k: 1,       //伤害值
+            //v: 40,      //子弹速度
+            //d: 500,     //射程
+            //ct: 0,      //持续时间   d*100/v 自动计算
+            //img: "zd0",
+            p: "p0",
+            pid: -1,
+            pcode: "",
+            fires: [ //火力点
+                {
+                    tx: 25,  //相对的武器发射点方向
+                    ty: 0,  //相对的武器发射点距离
+                    tr: 0,  //相对主体的方向偏移
+                    d: 500,  //距离
+                    v: 40,      //子弹速度
+                    ct: 0,      //持续时间  自动计算
+                    tt: 500,    //间隔时间
+                    st: 0,      //射击前置差异时间
+                    k: 1,       //伤害值
+                    img: "zd0"
+                }
+            ]
+        }
+        var addfires_t = clone(paodetail.fires[0])
+        var waiting_edit_obj;
+        var editervue = new Vue({
+            data: paodetail,
+            el: '#js-editer',
+            methods: {
+                save: function () {
+                    //this.pcodeSave();
+                    if (waiting_edit_obj) {
+                        var editcode = JSON.stringify(paodetail);
+                        waiting_edit_obj.code = editcode;
+
+                        waiting_edit_obj.n = paodetail.n;
+                        waiting_edit_obj.p = paodetail.p;
+                    }
+                    $("#js-editer").removeClass("show");
+                },
+                cancle: function () {
+                    $("#js-editer").removeClass("show");
+                },
+                addFire: function () {
+                    this.fires.push(clone(addfires_t));
+                },
+                deleteF: function (key) {
+                    var d = confirm("确认删除？");
+                    if (d)
+                        this.fires.splice(key, 1);
+                },
+                resetCode: function () {
+                    editor.setValue(resetcode);
+                },
+                pcodeSave: function () {
+                    var codevalue = editor.getValue();
+                    this.pcode = codevalue;
+                },
+                setToRight:function(){
+                    var codevalue = this.pcode;
+                    editor.setValue(codevalue);
+                },
+                pcodeRun: function () {
+                    var codevalue = editor.getValue();
+                    drowStr(codevalue);
+                    styletool.log("运行成功");
+                },
+                submitPicCode: function () {
+                    var tpid = this.pid;
+                    var _this = this;
+                    if (p_imgb64data) {
+                        $.ajax({
+                            url: "/admin/gunspic",
+                            type: "post",
+                            data: { str: p_imgb64data, pid: tpid , type: "pao" },
+                            dataType: "json",
+                            success: function (data) {
+                                if (data.success) {
+                                    styletool.log("提交成功");
+                                    _this.p = "p" + tpid;
+                                } else {
+                                    styletool.log("提交失败");
+                                }
+                            },
+                            error: function () {
+                                styletool.log("提交异常");
+                            }
+                        })
+                    } else {
+                        styletool.log("图片数据为空,无法提交");
+                    }
+                },
+                zd_ceshi: function () {
+                    drowZidanTest();
+                },
+                codecopySave: function () {
+                    $.ajax({
+                        type: 'post',
+                        url: "guncodecopy",
+                        data: { str: codecopyeditor.getValue() },
+                        success: function (data) {
+                            if (data.success) {
+                                styletool.log("提交成功");
+                            } else {
+                                styletool.log("提交失败");
+                            }
+                        },
+                    })
+                }
+            }
+        });
+        function editeOne(data) {   //编辑
+            var code = data.code;
+            if (code) {
+                code = JSON.parse(code);
+            } else {
+                code = {};
+            }
+            for (var ci in code) {
+                if (paodetail[ci] !== undefined) {
+                    paodetail[ci] = code[ci];
+                }
+            }
+            paodetail.pid = data.pid;
+            waiting_edit_obj = data;
+            $("#js-editer").addClass("show");
+        }
+
+
+    </script>
+
+    <script>
+        var drowStr = function () { };
+        var p_imgb64data = "";
+
+        (function () {
+            var $canvas = $("#js-pao-canvas");
+            var canvas = $canvas[0];
+            var ctx = canvas.getContext("2d");
+            var w, h;
+            w = h = 100;
+            canvas.width = w;
+            canvas.height = h;
+
+            var haf_w = w / 2;
+            var haf_h = h / 2;
+
+            var main = new createjs.Container();
+            var stage = new createjs.Stage(canvas);
+            stage.addChild(main);
+            var drow = new createjs.Container();
+            main.addChild(drow);
+
+            main.x = haf_w;
+            main.y = haf_h;
+
+            function setsize(ww, hh) {
+                w = ww;
+                h = hh;
+                haf_w = w / 2;
+                haf_h = h / 2;
+                canvas.width = w;
+                canvas.height = h;
+                main.x = haf_w;
+                main.y = haf_h;
+            }
+
+
+            //var s_canvas = document.createElement("canvas");
+            var s_canvas = document.getElementById("js-yasuo-canvas");
+            var s_ctx = s_canvas.getContext("2d");
+            //$(".edt-canvas-d").append(s_canvas);
+            function drowToSmallCanvas(data, ww, hh) {
+                s_canvas.width = ww;
+                s_canvas.height = hh;
+                s_ctx.clearRect(0, 0, ww, hh);
+                s_ctx.putImageData(data, 0, 0);
+                p_imgb64data = s_canvas.toDataURL('image/png');
+                $(".p_yulanimg").attr("src", p_imgb64data);
+            }
+
+            function saveToPreview() {
+                var imgdata = ctx.getImageData(0, 0, w, h);
+                var data = imgdata.data;
+                //console.log(data);
+                var minw = w, maxw = 0, minh = h, maxh = 0;
+                var a, has;
+                for (var j = 0; j < h; j++) {
+                    has = false;
+                    for (var i = 0; i < w; i++) {
+                        a = data[((j * h) + i) * 4 + 3];
+                        if (a > 0) {
+                            i < minw ? minw = i : 0;
+                            i > maxw ? maxw = i+1 : 0;
+                            has = true;
+                        }
+                    }
+                    if (has) {
+                        j < minh ? minh = j : 0;
+                        j > maxh ? maxh = j+1 : 0;
+                    }
+                }
+                //console.log(minw, maxw, minh, maxh);
+                //console.log(haf_w - minw, maxw - 50, 50 - minh, maxh - 50);
+                var cpw = haf_w - minw;
+                if (maxw - haf_w > cpw) {
+                    cpw = maxw - haf_w;
+                }
+                var cph = haf_h - minh;
+                if (maxh - haf_h > cph) {
+                    cph = maxh - haf_h;
+                }
+                if (cpw > 0 && cph > 0) {
+                    var nimgdata = ctx.getImageData(haf_w - cpw, haf_h - cph, cpw * 2, cph * 2);
+                    drowToSmallCanvas(nimgdata, cpw * 2, cph * 2);
+                }
+            }
+
+            function update() {
+                stage.update();
+                saveToPreview();
+            }
+
+            drowStr = function (str) {
+                drow.removeAllChildren();
+                var d = drow;
+
+                var shape = new createjs.Shape();
+                shape.shadow = new createjs.Shadow("rgba(0,0,0,0.8)", 0, 0, 6);
+                drow.addChild(shape);
+                var g = shape.graphics;
+
+                var shape2 = new createjs.Shape();
+                shape2.shadow = new createjs.Shadow("rgba(0,0,0,1)", 0, 0, 6);
+                drow.addChild(shape2);
+                var g2 = shape2.graphics;
+
+                for (var i = 0; i < 12; i++) {
+                    var sp = new createjs.Shape();
+                    sp.shadow = new createjs.Shadow("rgba(0,0,0,0.8)", 0, 0, 6);
+                    drow.addChild(sp);
+                    eval("var sp" + i + " =sp");
+                    eval("var gg" + i + " =sp.graphics");
+                }
+
+
+                try {
+                    eval(str);
+                } catch (e) {
+                    styletool.log("出错了");
+                }
+                update();
+            }
+
+
+
+        })();
+
+        var editor = ace.edit("js-pao-code");
+        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/javascript");
+
+        var codecopyeditor = ace.edit("js-code-copy");
+        codecopyeditor.setTheme("ace/theme/monokai");
+        codecopyeditor.getSession().setMode("ace/mode/javascript");
+        $.ajax({
+            type: 'get', url: "guncodecopy",
+            dataType: "text",
+            success: function (data) {
+                codecopyeditor.setValue(data);
+            },
+        });
+    </script>
+
+    <script>
+        var drowZidanTest = function () { };
+        (function () {
+            var $canvas = $("#js-zidan-canvas");
+            var canvas = $canvas[0];
+            var ctx = canvas.getContext("2d");
+            var w, h;
+            w = h = 100;
+            w = canvas.width;
+            h = canvas.height;
+
+            var haf_w = w / 2;
+            var haf_h = h / 2;
+
+            var main = new createjs.Container();
+            var stage = new createjs.Stage(canvas);
+            stage.addChild(main);
+            var drow = new createjs.Container();
+            main.addChild(drow);
+
+            main.x = 50;
+            main.y = haf_h;
+
+            function setsize(ww, hh) {
+                w = ww;
+                h = hh;
+                haf_w = w / 2;
+                haf_h = h / 2;
+                canvas.width = w;
+                canvas.height = h;
+                main.x = 50;
+                main.y = haf_h;
+            }
+
+            function update() {
+                stage.update();
+            }
+
+            drowZidanTest = function () {
+                drow.removeAllChildren();
+
+                var shape = new createjs.Shape();
+                shape.shadow = new createjs.Shadow("rgba(0,0,0,0.8)", 0, 0, 6);
+                drow.addChild(shape);
+                var g = shape.graphics;
+
+                
+
+                g.f("#f00");
+                //g.dc(0, 0, 10);
+                try {
+                    var fs = paodetail.fires;
+                    var fi;
+                    for (var i = 0; i < fs.length; i++) {
+                        fi = fs[i];
+                        //g.dc(fi.tx, fi.ty, 5);
+                        var img = paodetail.img;
+                        if (fi.img)
+                            img = fi.img;
+                        var bmp = new createjs.Bitmap("/p/" + img + ".png");
+                        console.log(bmp.image.naturalWidth, bmp.image.naturalHeight);
+                        bmp.x = fi.tx;
+                        bmp.y = fi.ty;
+                        bmp.regX = bmp.image.naturalWidth / 2;
+                        bmp.regY = bmp.image.naturalHeight / 2;
+                        drow.addChild(bmp);
+
+                        var v_r = tools.deg2vector(fi.tr);
+                        var bx = fi.tx;
+                        var by = fi.ty;
+
+                        
+
+                        var lnt = new createjs.Shape();
+                        var lng = lnt.graphics;
+                        lng.ss(1).s("rgba(255,0,0,0.5)").sd([6, 2]);
+
+                        bx += v_r.x * 10;
+                        by += v_r.y * 10;
+                        lng.mt(bx, by + 0.5)
+
+                        bx += v_r.x * (fi.d - 10);
+                        by += v_r.y * (fi.d - 10);
+                        lng.lt(bx, by + 0.5);
+                        drow.addChild(lnt);
+
+                    }
+                } catch (e) {
+                    console.log("出错了")
+                }
+                update();
+            }
+
+        })();
+    </script>
+
+    {% endblock %}
+</body>
+</html>

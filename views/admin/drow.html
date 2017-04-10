@@ -1,0 +1,371 @@
+﻿{% extends '../layout.html' %}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>{% block title %}{{title}}{% endblock %}</title>
+    {% block headcss %}
+    <link rel="stylesheet" href="/css/admin/drow.css" />
+    {% endblock %}
+</head>
+<body>
+    {% block content %}
+    <div id="js-main" class="main">
+        <div class="code-ct">
+            <div class="btns">
+                <div id="js-run" class="btn">运行</div>
+                <div class="btn">裁剪</div>
+            </div>
+            <div id="js-code-editor" class="code-editd"></div>
+        </div>
+
+        <div class="canvas-ct">
+            <div class="main-canvas">
+                <canvas id="js-main-canvas" width="500" height="500" class="main-canvas"></canvas>
+            </div>
+            <div class="other-canvas">
+                <canvas id="js-yasuo-canvas"></canvas>
+            </div>
+        </div>
+
+
+    </div>
+    {% endblock %}
+    <script src="/public/js/jquery-1.11.1.min.js"></script>
+    <script src="/public/js/pixi.js"></script>
+    <script src="/public/js2/easeljs-0.8.2.min.js"></script>
+    <script src="/public/js2/tweenjs-0.6.2.min.js"></script>
+    {% block footjs %}
+    <script src="/js/jquery-1.11.1.min.js"></script>
+    <script src="/js/pixi.min.js"></script>
+    <script src="/js2/easeljs-0.8.2.min.js"></script>
+    <script src="/js2/tweenjs-0.6.2.min.js"></script>
+    <script src="http://cdn.bootcss.com/ace/1.2.6/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+        var styletool = {};
+        styletool.toast = function (msg, msgtitle) {
+            var titlestr = "";
+            if (msgtitle) {
+                titlestr = "<span class='popup-toast-title'>" + msgtitle + "</span>";
+            }
+            var htmlstr = "<div class='popup-toast'>" + titlestr + "<span>" + msg + "</span></div>";
+            var toastdom = $(htmlstr);
+            $("body").append(toastdom);
+
+            setTimeout(function () {
+                toastdom.css("opacity", 0);
+            }, 2600);
+            setTimeout(function () {
+                toastdom.remove();
+            }, 3000);
+        }
+        styletool.log = styletool.toast;
+
+        var tools = {};
+        tools.deg2vector = function () {
+            var degreeToRadiansFactor = Math.PI / 180;
+            return function (deg, rst) {
+                var result = rst || { x: 0, y: 0 };
+                var rad = (deg % 360) * degreeToRadiansFactor;
+                result.y = Math.round(Math.sin(rad) * 1000) / 1000;
+                result.x = Math.round(Math.cos(rad) * 1000) / 1000;
+                return result;
+            }
+        }();
+        tools.vector2deg = function () {
+            var radianToDegreesFactor = 180 / Math.PI;
+            return function (x, y) {
+                if (x == 0 && y == 0) {
+                    return 360;
+                }
+                rad = Math.atan(y / x);
+                var result = rad * radianToDegreesFactor;
+                if (x < 0) {
+                    result += 180;
+                }
+                if (result < 0) {
+                    result += 360;
+                }
+                return result;
+            }
+        }();
+    </script>
+    <script>
+        var editor = ace.edit("js-code-editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/javascript");
+        $("#js-run").click(function () {
+            var cd = editor.getValue();
+            drowStr(cd);
+            saveCode(cd);
+        });
+
+        function saveCode(cd) {
+            localStorage.setItem("admin_drow_code", cd);
+        }
+        function loadCode() {
+            var cd = localStorage.getItem("admin_drow_code");
+            if (cd) {
+                editor.setValue(cd);
+            }
+        }
+
+        loadCode();
+        
+
+    </script>
+    <script>
+        var drowStr = function () { }
+        var p_imgb64data = "";
+        (function () {
+            var $canvas = $("#js-main-canvas");
+            var canvas = $canvas[0];
+            var ctx = canvas.getContext("2d");
+            var w, h;
+            w = h = 500;
+            canvas.width = w;
+            canvas.height = h;
+
+            var haf_w = w / 2;
+            var haf_h = h / 2;
+
+            var main = new createjs.Container();
+            var stage = new createjs.Stage(canvas);
+            stage.addChild(main);
+            var drow = new createjs.Container();
+            main.addChild(drow);
+
+            main.x = haf_w;
+            main.y = haf_h;
+
+            function setsize(ww, hh) {
+                w = ww;
+                h = hh;
+                haf_w = w / 2;
+                haf_h = h / 2;
+                canvas.width = w;
+                canvas.height = h;
+                main.x = haf_w;
+                main.y = haf_h;
+            }
+
+
+            //var s_canvas = document.createElement("canvas");
+            var s_canvas = document.getElementById("js-yasuo-canvas");
+            var s_ctx = s_canvas.getContext("2d");
+            //$(".edt-canvas-d").append(s_canvas);
+            function drowToSmallCanvas(data, ww, hh) {
+                s_canvas.width = ww;
+                s_canvas.height = hh;
+                s_ctx.clearRect(0, 0, ww, hh);
+                s_ctx.putImageData(data, 0, 0);
+                p_imgb64data = s_canvas.toDataURL('image/png');
+                $(".p_yulanimg").attr("src", p_imgb64data);
+            }
+
+            function saveToPreview() {
+                var imgdata = ctx.getImageData(0, 0, w, h);
+                var data = imgdata.data;
+                //console.log(data);
+                var minw = w, maxw = 0, minh = h, maxh = 0;
+                var a, has;
+                for (var j = 0; j < h; j++) {
+                    has = false;
+                    for (var i = 0; i < w; i++) {
+                        a = data[((j * h) + i) * 4 + 3];
+                        if (a > 0) {
+                            i < minw ? minw = i : 0;
+                            i > maxw ? maxw = i+1 : 0;
+                            has = true;
+                        }
+                    }
+                    if (has) {
+                        j < minh ? minh = j : 0;
+                        j > maxh ? maxh = j+1 : 0;
+                    }
+                }
+                var cpw = haf_w - minw;
+                if (maxw - haf_w > cpw) {
+                    cpw = maxw - haf_w;
+                }
+                var cph = haf_h - minh;
+                if (maxh - haf_h > cph) {
+                    cph = maxh - haf_h;
+                }
+                if (cpw > 0 && cph > 0) {
+                    var nimgdata = ctx.getImageData(haf_w - cpw, haf_h - cph, cpw * 2, cph * 2);
+                    drowToSmallCanvas(nimgdata, cpw * 2, cph * 2);
+                }
+            }
+
+            function update() {
+                stage.update();
+                saveToPreview();
+            }
+
+            drowStr = function (str) {
+                drow.removeAllChildren();
+                var d = drow;
+
+                //var shape = new createjs.Shape();
+                //shape.shadow = new createjs.Shadow("rgba(0,0,0,0.8)", 0, 0, 6);
+                //drow.addChild(shape);
+                //var g = shape.graphics;
+
+                //var shape2 = new createjs.Shape();
+                //shape2.shadow = new createjs.Shadow("rgba(0,0,0,1)", 0, 0, 6);
+                //drow.addChild(shape2);
+                //var g2 = shape2.graphics;
+
+                for (var i = 0; i < 12; i++) {
+                    var sp = new createjs.Shape();
+                    sp.shadow = new createjs.Shadow("rgba(0,0,0,0.8)", 0, 0, 6);
+                    drow.addChild(sp);
+                    eval("var sp" + i + " =sp");
+                    eval("var g" + i + " =sp.graphics");
+                }
+                
+
+
+                try {
+                    eval(str);
+                } catch (e) {
+                    styletool.log("出错了");
+                }
+                update();
+            }
+
+//刻度盘
+function d() {
+    var sp = new createjs.Shape();
+    sp.shadow = new createjs.Shadow("rgba(0,0,0,0.8)", 0, 0, 6);
+    var g1 = sp.graphics;
+    var g2 = g1;
+    var g3 = g1;
+    var g4 = g1;
+
+
+
+    var radiu = 100;
+    var radiu_m = radiu - 7;
+    sp1.shadow = null;
+    g1.f("rgba(255,255,255,0.1)");
+    g1.s("rgba(255,255,255,0.2)").ss(1)
+    g1.dc(0, 0, radiu);
+
+    //sp2.x = 0.5
+    //sp2.y = 0.5
+    sp2.shadow = null;
+    g2.s("rgba(255,255,255,1)")
+
+    for (var i = 0; i < 360; i += 3) {
+        var linew = 0.5;
+        var rm = radiu_m;
+        if (i % 15 === 0) {
+            linew = 1;
+            rm -= 3
+        }
+        if (i % 30 === 0) {
+            linew = 1.5;
+            rm -= 3
+        }
+        var v = tools.deg2vector(i);
+        var v2 = {
+            x: v.x * radiu,
+            y: v.y * radiu
+        }
+        var v3 = {
+            x: v.x * rm,
+            y: v.y * rm
+        }
+        g2.ss(linew);
+        g2.moveTo(v2.x, v2.y).lineTo(v3.x, v3.y)
+
+    }
+
+    sp3.shadow = null;
+    g3.f("rgba(255,255,255,0.2)");
+    g3.s("rgba(255,255,255,0.2)").ss(1)
+    g3.dc(0, 0, 6);
+    g3.f("")
+    g3.dp(0, 0, radiu * 0.55, 24, 0.6)
+    g3.dc(0, 0, radiu * 0.4)
+
+    g3.f("rgba(255,255,255,0.5)");
+    g3.ss(0)
+
+    for (var i = 0; i < 360; i += 3) {
+        var v = tools.deg2vector(i);
+        var bj = radiu - 20;
+        for (var j = 0; j < 5; j++) {
+            var v2 = {
+                x: v.x * bj,
+                y: v.y * bj
+            }
+            bj -= 2;
+
+            g3.dc(v2.x, v2.y, 0.5)
+            g3.es()
+        }
+    }
+
+
+}
+
+//坦克
+function t() {
+    var sp = new createjs.Shape();
+    sp.shadow = new createjs.Shadow("rgba(0,0,0,0.8)", 0, 0, 6);
+    var g1 = sp.graphics;
+    var g2 = g1;
+    var g3 = g1;
+    var g4 = g1;
+
+
+
+    sp1.shadow = null;
+    // g1.f("#aaa");
+    // g1.dr(-22, -22, 34, 46)    //g1.dr(-30,-30,48,60)
+    // g1.f("#ddd");
+    // //g1.s("rgba(0,0,0,0.5)").ss(0).s()
+    // g1.rr(-30, -30, 60, 14, 2)          //rr(-40, -40, 80, 18, 2)
+    //     .rr(-30, 30 - 14, 60, 14, 2)    //.rr( -40,40 - 18, 80, 18, 2)
+
+
+    g1.f("rgba(0,0,0,0.5)");
+    g1.ss(0).s()
+    // for(var x = -29;x<29;x+=6){
+    //     g1.dr(x, -29 ,1,12)
+    //     g1.dr(x, 17 ,1,12)
+    // }
+
+    for (var x = 35; x > -35; x -= 6) {
+        g1.dr(x, -6, 1, 12)
+    }
+
+    /*
+    sp2.shadow = null;
+    g2.s("rgba(255,255,255,1)")*/
+
+    //sp3.shadow = null
+    //g3.f("#eee").rr(-28,-24,48,48,10)
+    // g3.f("#aaa").rr(0,-6,36,12,1)
+    // g3.f("#fff").rr(-24,-20,40,40,4)
+
+}
+
+
+
+
+
+
+
+
+        })();
+
+
+    </script>
+
+    {% endblock %}
+</body>
+</html>

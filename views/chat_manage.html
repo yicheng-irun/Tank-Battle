@@ -1,0 +1,183 @@
+﻿{% extends 'layout.html' %}
+
+{% block headcss %}
+<link rel="stylesheet" href="/css/feiji.css" />
+<link rel="stylesheet" href="/css/chat.css" />
+    {% endblock %}
+{% block extra_style %}
+    {% cssmin %}
+    <style>
+    </style>
+    {% endcssmin %}
+{% endblock %}
+
+{% block baidutongji %}{% endblock %}
+
+{% block content %}
+
+
+<div>
+
+
+
+
+    <div id="js-main">
+
+        {% raw %}
+
+        <div class="top-set">
+            <div>
+                <label>密码：</label>
+                <input type="password"  v-model="pswd" id="pswd" />
+            </div>
+            <div>
+                <label>名称：</label>
+                <input type="text" v-model="userName" id="" />
+                <button type="button" v-on:click="userName='system'">system</button>
+                <button type="button" v-on:click="userName='管理员'">管理员</button>
+            </div>
+            <div>
+                <label>数量：</label>
+                <span>{{ccount}}</span>
+            </div>
+        </div>
+
+        <div id="js-chat-wrap" class="chat-wrap">
+            <div class="chat-title">
+                <span>CHATROOM</span>
+            </div>
+            <div id="js-chat-room" class="chat-room">
+                <div id="js-chat-msgs" class="chat-msgs">
+                    <p v-for="prow in chatRoom.msg" class="chat-row" data-uid="{{prow.i}}">
+                        <span class="chat-time">[{{prow.t}}]</span>
+                        <span class="chat-user" v-bind:class="{'chat-sys':(prow.u==1)}">{{prow.n}}</span>
+                        <span class="chat-txt">{{prow.v}}</span>
+                    </p>
+                </div>
+                <div class="chat-iptd">
+                    <div class="chat-ipt-ct">
+                        <input id="js-chat-input" type="text" v-model="chatRoom.ipt" v-on:keyup.13="send($event)" maxlength="100" class="chat-ipt" />
+                    </div>
+                    <div class="chat-send" v-on:click="send()">send</div>
+                </div>
+            </div>
+        </div>
+        {% endraw %}
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+{% endblock %}
+
+{% block footjs %}
+<script src="/js/jquery-1.11.1.min.js"></script>
+<script src="/js/vue.js"></script>
+<script src="/js/socketio_145.js"></script>
+<script>
+
+
+    var pageData = {
+        suportWS: "WebSocket" in window,
+        sysstate: 0, //0表示未开始 1表示等待中  2表示已经开始
+        playing: false,
+        userName: "system",
+        pswd: "",
+        ccount:0,
+        chatRoom: {
+            msg: [
+                //{ i:"xxxx id", u: 0, n: "name", v: "aaaaaaaaaaaaaaaaaasdffffffffffffffffaaaaaa" },
+            ],
+            ipt: "",
+        }
+    };
+
+
+    function chat_load_beforedata() {
+        $.ajax({
+            url: "chatdata",
+            dataType: "json",
+            success: function (data) {
+                chat_add(data, true);
+            },
+            error: function (data) {
+
+            }
+        })
+    }
+    $(function () {
+        chat_load_beforedata();
+    })
+
+    var chat_socket = io("/");
+    var chat_myid = "";
+    chat_socket.on("m", function (data) {
+        chat_add(data);
+    });
+    chat_socket.on("y", function (data) {
+        chat_myid = data.id;
+    });
+
+    var js_chat_msg_cont = document.getElementById("js-chat-msgs");
+    var js_chat_wrap = $("#js-chat-wrap");
+    var js_chat_room = $("#js-chat-room");
+    var js_container = $("#js-container");
+    var js_chat_input = $("#js-chat-input");
+    function chat_add(data, byajax) {
+        var sctobtn = (js_chat_msg_cont.scrollTop == js_chat_msg_cont.scrollHeight - js_chat_msg_cont.clientHeight)
+        if (byajax) {
+            pageData.chatRoom.msg = data.concat(pageData.chatRoom.msg);
+        } else {
+            pageData.chatRoom.msg.push(data);
+        }
+        if (pageData.chatRoom.msg.length > 500) {
+            pageData.chatRoom.msg.splice(2);
+        }
+        if (sctobtn) {
+            setTimeout(function () {
+                js_chat_msg_cont.scrollTop = js_chat_msg_cont.scrollHeight - js_chat_msg_cont.clientHeight;
+            }, 10);
+        }
+    }
+
+    var pagevue = new Vue({
+        el: '#js-main',
+        data: pageData,
+        methods: {
+            send: function (e) {
+                //if (this.chatRoom.ipt == "") {
+                //    return;
+                //}
+                $.ajax({
+                    url: "",
+                    type: "post",
+                    dataType:"json",
+                    data: {
+                        p: pageData.pswd,
+                        n: pageData.userName,
+                        v: pageData.chatRoom.ipt
+                    },
+                    success:function(data){
+                        pageData.ccount = data.c + " [" + new Date().toLocaleString() +"]";
+                    },
+                    error:function(){
+
+                    }
+                })
+                this.chatRoom.ipt = "";
+            }
+        }
+    });
+
+
+</script>
+
+
+
+{% endblock %}

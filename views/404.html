@@ -1,0 +1,33 @@
+﻿{% extends 'layout.html' %}
+
+{% block extra_style %}
+    {% cssmin %}
+    <style>
+        .div-404 {
+            text-align: center;
+            padding-top: 200px;
+        }
+        .div-404>h1{
+            font-size: 50px;
+        }
+        .div-404>h2{
+        }
+        .div-404>p{
+        }
+    </style>
+    {% endcssmin %}
+{% endblock %}
+
+{% block baidutongji %}{% endblock %}
+
+{% block content %}
+<div class="div-404">
+    <h1>404</h1>
+    <h2>Page not found</h2>
+    <p>We're sorry, but the requested page could not be found.</p>
+    <p>page: {{url}}</p>
+</div>
+{% endblock %}
+
+{% block extra_foot_script %}
+{% endblock %}
