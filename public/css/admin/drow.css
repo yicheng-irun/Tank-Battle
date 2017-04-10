@@ -1,0 +1,73 @@
+body {
+}
+
+.popup-toast {
+    position: fixed;
+    text-align: center;
+    right: 10px;
+    top: 10px;
+    max-width: 180px;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.55);
+    padding: 8px 20px;
+    color: #FFF;
+    -webkit-box-shadow: 0 0.5px 3px rgba(0,0,0,0.3);
+    -moz-box-shadow: 0 0.5px 3px rgba(0,0,0,0.3);
+    box-shadow: 0 0.5px 3px rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    opacity: 1;
+    -webkit-transition: opacity 0.4s;
+    -moz-transition: opacity 0.4s;
+    transition: opacity 0.4s;
+    font-size: 12px;
+    line-height: 1.2;
+    -webkit-user-select: none;
+}
+
+    .popup-toast > span {
+        word-break: break-all;
+    }
+
+    .popup-toast .popup-toast-title {
+        display: block;
+        font-size: 1rem;
+        padding: 0 0 10px 0;
+        word-break: break-all;
+    }
+
+.btn {
+    display: inline-block;
+    border: none;
+    color: #fff;
+    background-color: #D23131;
+    font-size: 12px;
+    line-height: 1.6;
+    padding: 1px 9px;
+    -webkit-user-select: none;
+    cursor: pointer;
+}
+
+
+    .btn.info {
+        background-color: #31A5D2;
+    }
+
+    .btn.success {
+        background-color: #31D297;
+    }
+
+.main {background-color: #F2F6FF;background-color: #171717;background-image: url(/p/bg2.png);}
+
+.code-ct {
+}
+
+.code-editd {
+    height: 400px;
+}
+.canvas-ct {
+}
+div.main-canvas {text-align: center;padding: 10px 0;}
+canvas.main-canvas {
+}
+.other-canvas {border-top: 1px solid #aaa;text-align: center;padding: 10px 0 30px 0;}
+#js-yasuo-canvas {border: 3px solid rgba(0,0,0,0.3);}
