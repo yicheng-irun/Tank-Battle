@@ -40,11 +40,11 @@ $ node www
 
 
 浏览器打开 
-[http://localhost:5000/](http://localhost:5000/)
+<a href="http://localhost:5000/" target="_blank">http://localhost:5000/</a>
 
 
 试玩之后，用浏览器打开 
-[https://github.com/yicheng-irun/Tank-Battle](https://github.com/yicheng-irun/Tank-Battle)
+<a href="https://github.com/yicheng-irun/Tank-Battle" target="_blank">https://github.com/yicheng-irun/Tank-Battle</a>
 
 点击此处，给我一颗星<br>
 
